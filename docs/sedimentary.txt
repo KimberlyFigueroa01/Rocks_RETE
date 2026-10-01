@@ -1,0 +1,75 @@
+--LEVEL 1: Inference of origin--
+
+R1_sedimentary:
+    IF Evidence(texture = 'clastic')
+    THEN Declare(Origin(type='sedimentary'))
+
+R2_sedimentary:
+    IF Evidence(texture = 'non_clastic')
+    THEN Declare(Origin(type='sedimentary'))
+
+R3_sedimentary:
+    IF (Evidence(acid_reaction = 'strong') OR Evidence(acid_reaction = 'weak'))
+       AND Evidence(foliation = 'no')
+    THEN Declare(Origin(type='sedimentary'))
+
+R4_sedimentary:
+    IF Evidence(plant_remains = 'yes')
+    THEN Declare(Origin(type='sedimentary'))
+
+
+--LEVEL 2: Classification--
+
+R5_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(texture='clastic') AND Evidence(clast_size='clay')
+    THEN Declare(Classification(rock='shale'))
+
+R6_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(texture='clastic') AND Evidence(clast_size='silt')
+    THEN Declare(Classification(rock='siltstone'))
+
+R7_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(texture='clastic') AND Evidence(clast_size='sand')
+    THEN Declare(Classification(rock='sandstone'))
+
+R8_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(texture='clastic') AND Evidence(clast_size='gravel')
+       AND Evidence(clast_shape='rounded')
+    THEN Declare(Classification(rock='conglomerate'))
+
+R9_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(texture='clastic') AND Evidence(clast_size='gravel')
+       AND Evidence(clast_shape='angular')
+    THEN Declare(Classification(rock='breccia'))
+
+R10_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(texture='non_clastic') AND Evidence(taste='salty')
+    THEN Declare(Classification(rock='halite'))
+
+R11_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(texture='non_clastic') AND Evidence(taste='none')
+    THEN Declare(Classification(rock='gypsum'))
+
+R12_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(acid_reaction='strong')
+    THEN Declare(Classification(rock='limestone'))
+
+R13_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(acid_reaction='weak')
+    THEN Declare(Classification(rock='dolomite'))
+
+R14_sedimentary:
+    IF Origin(type='sedimentary') AND Evidence(plant_remains='yes')
+    THEN Declare(Classification(rock='coal'))
+
+--LEVEL 3: Recommendation--
+R15_sedimentary: IF Classification(rock='shale') THEN Declare(Recommendation(use='ceramics_and_bricks'))
+R16_sedimentary: IF Classification(rock='siltstone') THEN Declare(Recommendation(use='fill_material'))
+R17_sedimentary: IF Classification(rock='sandstone') THEN Declare(Recommendation(use='construction_walls_facades'))
+R18_sedimentary: IF Classification(rock='conglomerate') THEN Declare(Recommendation(use='construction_aggregate'))
+R19_sedimentary: IF Classification(rock='breccia') THEN Declare(Recommendation(use='construction_aggregate'))
+R20_sedimentary: IF Classification(rock='halite') THEN Declare(Recommendation(use='salt_industry_and_consumption'))
+R21_sedimentary: IF Classification(rock='gypsum') THEN Declare(Recommendation(use='cement_and_gypsum_panels'))
+R22_sedimentary: IF Classification(rock='limestone') THEN Declare(Recommendation(use='cement_and_lime'))
+R23_sedimentary: IF Classification(rock='dolomite') THEN Declare(Recommendation(use='industrial_agricultural_aggregate'))
+R24_sedimentary: IF Classification(rock='coal') THEN Declare(Recommendation(use='fuel'))
