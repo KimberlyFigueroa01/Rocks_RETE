@@ -1,7 +1,7 @@
 """Hechos base que representaran la evidencia y resultados del sistema."""
 
 
-from experta import KnowledgeEngine
+from experta import Fact
 
 
 class Evidence(Fact):
@@ -22,3 +22,6 @@ class Classification(Fact):
 class Recommendation(Fact):
     """Recommendation associated with the classification obtained."""
     pass
+
+
+Evidencia = Evidence
