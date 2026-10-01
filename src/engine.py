@@ -454,13 +454,50 @@ class RockClassifier(KnowledgeEngine):
 
 RockClassificationEngine = RockClassifier
 
+def mostrar_estado(motor, paso):
+    print(f"\n--- Estado antes del paso {paso} ---")
+    print("Hechos:")
+    for fact_id, fact in motor.facts.items():
+        print(f"  {fact_id}: {dict(fact)}")
+
+    print("Agenda:")
+    for index, activation in enumerate(motor.agenda.activations, start=1):
+        print(f"  {index}: {activation.rule.__name__} -> {activation.facts}")
+
+
+def ejecutar_paso_a_paso(motor):
+    paso = 1
+    motor.running = True
+    try:
+        while motor.running:
+            added, removed = motor.get_activations()
+            motor.strategy.update_agenda(motor.agenda, added, removed)
+            mostrar_estado(motor, paso)
+
+            activation = motor.agenda.get_next()
+            if activation is None:
+                break
+
+            print(f"Disparando: {activation.rule.__name__}")
+            activation.rule(
+                motor,
+                **{
+                    key: value
+                    for key, value in activation.context.items()
+                    if not key.startswith('__')
+                }
+            )
+            paso += 1
+    finally:
+        motor.running = False
+
     #RUN
 if __name__ == '__main__':
     engine = RockClassifier()
     engine.reset()
     engine.declare(Evidence(texture='clastic'))
     engine.declare(Evidence(clast_size='sand'))
-    engine.run()
+    ejecutar_paso_a_paso(engine)
 
     print("\nFinal facts in working memory:")
     for fact in engine.facts.values():
