@@ -1,4 +1,4 @@
-"""Pruebas del sistema experto de clasificacion de rocas."""
+"""Tests for the rock classification expert system."""
 
 import unittest
 
@@ -7,10 +7,10 @@ from src.facts import Evidence, Classification, Recommendation
 
 
 class TestSedimentaryRules(unittest.TestCase):
-    """Verifica la clasificacion de rocas sedimentarias."""
+    """Verifies the classification of sedimentary rocks."""
 
     def _run(self, *evidences):
-        """Inicializa el motor, declara las evidencias y lo ejecuta."""
+        """Initializes the engine, declares the evidence, and runs it."""
         engine = RockClassificationEngine()
         engine.reset()
         for ev in evidences:
@@ -19,7 +19,7 @@ class TestSedimentaryRules(unittest.TestCase):
         return engine
 
     def test_sandstone(self):
-        """Textura clastica + arena => arenisca."""
+        """Clastic texture + sand => sandstone."""
         engine = self._run(
             Evidence(texture='clastic'),
             Evidence(clast_size='sand'),
@@ -30,11 +30,11 @@ class TestSedimentaryRules(unittest.TestCase):
         ]
         self.assertTrue(
             any(c.get('rock') == 'sandstone' for c in classifications),
-            f"Se esperaba 'sandstone', se obtuvo: {classifications}",
+            f"Expected 'sandstone', got: {classifications}",
         )
 
     def test_coal(self):
-        """Restos vegetales => carbon."""
+        """Plant remains => coal."""
         engine = self._run(Evidence(plant_remains='yes'))
         classifications = [
             dict(f) for f in engine.facts.values()
@@ -42,11 +42,11 @@ class TestSedimentaryRules(unittest.TestCase):
         ]
         self.assertTrue(
             any(c.get('rock') == 'coal' for c in classifications),
-            f"Se esperaba 'coal', se obtuvo: {classifications}",
+            f"Expected 'coal', got: {classifications}",
         )
 
     def test_sandstone_recommendation(self):
-        """Arenisca genera recomendacion de construccion."""
+        """Sandstone generates construction recommendation."""
         engine = self._run(
             Evidence(texture='clastic'),
             Evidence(clast_size='sand'),
@@ -57,15 +57,15 @@ class TestSedimentaryRules(unittest.TestCase):
         ]
         self.assertTrue(
             any(r.get('use') == 'construction_walls_facades' for r in recommendations),
-            f"Se esperaba 'construction_walls_facades', se obtuvo: {recommendations}",
+            f"Expected 'construction_walls_facades', got: {recommendations}",
         )
 
 
 class TestEngineStartup(unittest.TestCase):
-    """Verifica que el motor arranca correctamente sin errores."""
+    """Verifies that the engine starts correctly without errors."""
 
     def test_engine_resets_cleanly(self):
-        """El motor puede reiniciarse y ejecutarse sin hechos."""
+        """The engine can reset and run without facts."""
         engine = RockClassificationEngine()
         engine.reset()
         engine.run()

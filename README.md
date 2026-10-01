@@ -1,33 +1,33 @@
-# Sistema experto de clasificacion de rocas
+# Rock Classification Expert System
 
-Sistema experto modular basado en conocimiento que utiliza el algoritmo Rete mediante la biblioteca [Experta](https://pypi.org/project/experta/). Este sistema clasifica rocas (sedimentarias, ígneas y metamórficas) a partir de evidencias observables y genera recomendaciones de uso industrial o constructivo.
+A modular knowledge-based expert system that uses the Rete algorithm via the [Experta](https://pypi.org/project/experta/) library. This system classifies rocks (sedimentary, igneous, and metamorphic) based on observable evidence and generates industrial or construction usage recommendations.
 
-## Arquitectura Actual
+## Current Architecture
 
-El proyecto está diseñado de forma modular utilizando herencia múltiple (mixins) para mantener el código organizado y escalable.
+The project is designed in a modular way using multiple inheritance (mixins) to keep the code organized and scalable.
 
 ```text
 Rocks_RETE/
-|-- main.py              # Punto de entrada principal y ejemplo de uso
-|-- requirements.txt     # Dependencias del proyecto
-|-- docs/                # Documentación y definición de reglas en texto
-|-- src/                 # Código fuente del sistema experto
+|-- main.py              # Main entry point and usage example
+|-- requirements.txt     # Project dependencies
+|-- docs/                # Documentation and text-based rule definitions
+|-- src/                 # Expert system source code
 |   |-- __init__.py
-|   |-- engine.py        # Ensambla el motor de inferencia (RockClassificationEngine)
-|   |-- facts.py         # Definición de hechos (Evidence, Origin, Classification, Recommendation)
-|   |-- utils.py         # Utilidades para inspeccionar la memoria de trabajo y depurar
-|   `-- rules/           # Subpaquete de reglas agrupadas por tipo de roca
+|   |-- engine.py        # Assembles the inference engine (RockClassificationEngine)
+|   |-- facts.py         # Facts definitions (Evidence, Origin, Classification, Recommendation)
+|   |-- utils.py         # Utilities to inspect the working memory and debug
+|   `-- rules/           # Subpackage for rules grouped by rock type
 |       |-- __init__.py
-|       |-- igneous.py       # Mixin con reglas para rocas ígneas
-|       |-- metamorphic.py   # Mixin con reglas para rocas metamórficas
-|       `-- sedimentary.py   # Mixin con reglas para rocas sedimentarias
-`-- tests/               # Pruebas unitarias
-    `-- test_rules.py    # Casos de prueba automatizados
+|       |-- igneous.py       # Mixin with rules for igneous rocks
+|       |-- metamorphic.py   # Mixin with rules for metamorphic rocks
+|       `-- sedimentary.py   # Mixin with rules for sedimentary rocks
+`-- tests/               # Unit tests
+    `-- test_rules.py    # Automated test cases
 ```
 
-### Diagrama de Arquitectura
+### Architecture Diagram
 
-El motor principal ensambla las reglas de los diferentes módulos, permitiendo a Experta construir una única red Rete eficiente:
+The main engine assembles the rules from the different modules, allowing Experta to build a single, efficient Rete network:
 
 ```mermaid
 classDiagram
@@ -62,84 +62,84 @@ classDiagram
     KnowledgeEngine <|-- RockClassificationEngine
 ```
 
-## Estrategias del código para evitar errores
+## Strategies Implemented to Avoid Errors
 
-El código implementa varias estrategias fundamentales para garantizar un funcionamiento robusto y lógico durante la inferencia:
+The code implements several key strategies to ensure robust and logical operation during inference:
 
-1. **Inferencia en 3 Niveles Estrictos**:
-   - **Nivel 1 (Origen)**: Las reglas iniciales deducen el origen general (ígneo, metamórfico o sedimentario).
-   - **Nivel 2 (Clasificación)**: Las reglas de clasificación requieren estrictamente que el hecho `Origin` exista. Así se evita clasificar erróneamente algo como "Granito" si las evidencias indicaran origen sedimentario.
-   - **Nivel 3 (Recomendación)**: Dependen de la existencia previa del hecho `Classification`.
+1. **Strict 3-Level Inference**:
+   - **Level 1 (Origin)**: Initial rules deduce the general origin (igneous, metamorphic, or sedimentary).
+   - **Level 2 (Classification)**: Classification rules strictly require the `Origin` fact to exist. This prevents mistakenly classifying something as "Granite" if the evidence indicates a sedimentary origin.
+   - **Level 3 (Recommendation)**: These depend on the prior existence of the `Classification` fact.
 
-2. **Control de Prioridades y Ambigüedades (`salience` y `NOT`)**:
-   - **Saliencia**: Reglas con evidencias muy contundentes tienen `salience` alto (por defecto 5, 4 o 3). Evidencias ambiguas tienen saliencia menor.
-   - **Guardas Negativas**: Se usan patrones como `NOT(Origin())` o `NOT(Classification())` en las reglas ambiguas o de menor nivel. Esto asegura que la regla solo se dispare si el sistema *no ha podido* llegar a una conclusión más fuerte por otros medios, evitando choques y sobrescrituras de resultados.
+2. **Priority Control and Ambiguities (`salience` and `NOT`)**:
+   - **Salience**: Rules with very strong evidence have high `salience` (defaulting to 5, 4, or 3). Ambiguous evidence has lower salience.
+   - **Negative Guards**: Patterns like `NOT(Origin())` or `NOT(Classification())` are used in ambiguous or lower-level rules. This ensures that the rule only fires if the system *has not been able* to reach a stronger conclusion through other means, avoiding clashes and overwritten results.
 
-3. **Modularización por Dominio**:
-   - Separar las reglas en módulos diferentes (Mixins en `src/rules/`) previene un monolito gigante, reduce la probabilidad de introducir errores tipográficos entre tipos de roca y simplifica la detección y corrección de comportamientos inesperados en las reglas.
+3. **Domain Modularization**:
+   - Separating the rules into different modules (Mixins in `src/rules/`) prevents a giant monolith, reduces the probability of introducing typos between rock types, and simplifies detecting and correcting unexpected behavior in the rules.
 
-## Pruebas que se deben realizar
+## Tests to be Performed
 
-Para asegurar que el sistema se comporta adecuadamente, la batería de pruebas en `tests/test_rules.py` (o pruebas manuales con el método paso a paso) debe contemplar:
+To ensure the system behaves properly, the test suite in `tests/test_rules.py` (or manual tests using the step-by-step method) should cover:
 
-1. **Casos directos (Happy Path)**:
-   - Proveer un conjunto de evidencias claras y probar que el sistema infiere el origen, la roca y la recomendación correcta para cada tipo base (sedimentaria, ígnea, metamórfica). Ej: `texture='clastic' + clast_size='sand'` -> `sandstone`.
+1. **Direct Cases (Happy Path)**:
+   - Provide a set of clear evidence and test that the system infers the correct origin, rock, and recommendation for each base type (sedimentary, igneous, metamorphic). E.g., `texture='clastic' + clast_size='sand'` -> `sandstone`.
 
-2. **Casos de Evidencias Ambigüas**:
-   - Ingresar hechos como la reacción al ácido (`acid_reaction='strong'`), que puede darse tanto en rocas sedimentarias (caliza) como metamórficas (mármol), y proveer una evidencia diferenciadora (como la foliación o el protolito) para comprobar que la guarda negativa o la inferencia de Nivel 1 encaminan correctamente al Nivel 2 correspondiente.
+2. **Ambiguous Evidence Cases**:
+   - Input facts such as acid reaction (`acid_reaction='strong'`), which can occur in both sedimentary (limestone) and metamorphic (marble) rocks, and provide a differentiating piece of evidence (like foliation or protolith) to verify that the negative guard or Level 1 inference correctly routes to the corresponding Level 2.
 
-3. **Ejecución de Diagnóstico (Depuración)**:
-   - Si una regla no se dispara o el motor se detiene antes de clasificar, se debe reemplazar en `main.py` la llamada `engine.run()` por la función `run_step_by_step(engine)` provista en `src/utils.py`. Esto pausará el sistema en cada ciclo y mostrará el estado de la **Memoria de Trabajo** y la **Agenda**, revelando exactamente qué reglas se activan y con qué hechos.
+3. **Diagnostic Execution (Debugging)**:
+   - If a rule does not fire or the engine stops before classifying, the `engine.run()` call in `main.py` should be replaced by the `run_step_by_step(engine)` function provided in `src/utils.py`. This will pause the system at each cycle and display the state of the **Working Memory** and the **Agenda**, revealing exactly which rules are triggered and with what facts.
 
-## Python y compatibilidad
+## Python and Compatibility
 
-Experta 1.9.4 es una versión antigua. Sus metadatos en PyPI declaran clasificadores hasta Python 3.8; por tanto, **este proyecto debe ejecutarse con Python 3.8**. `requirements.txt` incluye `frozendict<2.0`; Experta 1.9.4 fija internamente `frozendict==1.2`, así que la resolución normal terminará usando esa versión.
+Experta 1.9.4 is an older version. Its PyPI metadata declares classifiers up to Python 3.8; therefore, **this project must be run with Python 3.8**. `requirements.txt` includes `frozendict<2.0`; Experta 1.9.4 internally pins `frozendict==1.2`, so normal resolution will end up using that version.
 
-Python 3.9 a 3.11 puede funcionar en algunos entornos, pero no está cubierto por los clasificadores publicados de Experta. La dependencia antigua `frozendict==1.2` puede dar problemas en Python 3.10 y posteriores por cambios en `collections` de la biblioteca estándar. Python 3.12+ tampoco debe considerarse compatible de forma directa. Si el proyecto debe usar esas versiones:
+Python 3.9 through 3.11 may work in some environments, but they are not covered by Experta's published classifiers. The older `frozendict==1.2` dependency may cause issues in Python 3.10 and later due to changes in the standard library's `collections`. Python 3.12+ should also not be considered directly compatible. If the project must use these versions:
 
-1. Preferir Python 3.8 para ejecutar Experta 1.9.4 sin modificar dependencias.
-2. Como alternativa, mantener un fork de Experta que permita una versión moderna de `frozendict` y verificar sus cambios con las pruebas del proyecto.
-3. Un parche local de compatibilidad para `collections` antes de importar Experta puede servir como medida temporal, pero no es una solución garantizada y debe probarse con el entorno objetivo.
+1. Prefer Python 3.8 to run Experta 1.9.4 without modifying dependencies.
+2. Alternatively, maintain a fork of Experta that allows a modern version of `frozendict` and verify its changes against the project's tests.
+3. A local compatibility patch for `collections` before importing Experta can serve as a temporary workaround, but it is not a guaranteed solution and must be tested in the target environment.
 
-No se debe asumir que cambiar solo la restricción de `frozendict` en `requirements.txt` actualiza la dependencia: Experta 1.9.4 solicita la versión 1.2 de forma exacta.
+It should not be assumed that changing only the `frozendict` restriction in `requirements.txt` updates the dependency: Experta 1.9.4 requests version 1.2 exactly.
 
-## Instalación
+## Installation
 
-Instala Python 3.8 y, desde la carpeta raíz del repositorio, instala Experta. **No es necesario crear ni activar un entorno virtual** para ejecutar este proyecto.
+Install Python 3.8 and, from the repository root, install Experta. **There is no need to create or activate a virtual environment** to run this project.
 
-En Windows PowerShell, usa el launcher para asegurar que el paquete se instale en Python 3.8:
+In Windows PowerShell, use the launcher to ensure the package installs in Python 3.8:
 
 ```powershell
 py -3.8 -m pip install experta
 ```
 
-También puedes usar el comando corto si `pip` corresponde a Python 3.8:
+You can also use the short command if `pip` corresponds to Python 3.8:
 
 ```powershell
 pip install experta
 ```
 
-Para instalar las dependencias declaradas en el archivo del proyecto:
+To install dependencies declared in the project file:
 
 ```powershell
 py -3.8 -m pip install -r requirements.txt
 ```
 
-En macOS o Linux, el equivalente es `python3.8 -m pip install experta`. Un entorno virtual sigue siendo opcional si deseas aislar las dependencias. En VS Code, selecciona el intérprete global de Python 3.8 mediante **Python: Select Interpreter**.
+On macOS or Linux, the equivalent is `python3.8 -m pip install experta`. A virtual environment is still optional if you wish to isolate dependencies. In VS Code, select the global Python 3.8 interpreter via **Python: Select Interpreter**.
 
-## Ejecución
+## Execution
 
-Desde la raíz del repositorio, ejecuta el programa con Python 3.8:
+From the repository root, run the program with Python 3.8:
 
 ```powershell
 py -3.8 main.py
 ```
 
-El motor se inicia con un ejemplo en el `main.py`, declara evidencias para clasificar una roca (ej. arenisca) y ejecuta las reglas.
+The engine starts with an example in `main.py`, declares evidence to classify a rock (e.g., sandstone), and runs the rules.
 
-## Pruebas
+## Tests
 
-`unittest` forma parte de Python, por lo que no requiere instalar pytest. Ejecuta las pruebas unitarias automatizadas con Python 3.8:
+`unittest` is part of Python, so it does not require installing pytest. Run the automated unit tests with Python 3.8:
 
 ```powershell
 py -3.8 -m unittest discover -s tests -v

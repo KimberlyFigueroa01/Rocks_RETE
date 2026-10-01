@@ -1,37 +1,37 @@
-"""Utilidades de salida e inspeccion del estado del motor RETE."""
+"""Output and inspection utilities for the RETE engine state."""
 
 from experta import KnowledgeEngine
 
 
 def print_working_memory(engine: KnowledgeEngine) -> None:
-    """Imprime todos los hechos actuales en la memoria de trabajo."""
-    print("\n=== Memoria de trabajo ===")
+    """Prints all current facts in the working memory."""
+    print("\n=== Working Memory ===")
     for fact_id, fact in engine.facts.items():
         print(f"  [{fact_id}] {fact.__class__.__name__}: {dict(fact)}")
 
 
 def print_agenda(engine: KnowledgeEngine) -> None:
-    """Imprime las activaciones pendientes en la agenda."""
+    """Prints pending activations in the agenda."""
     print("\n=== Agenda ===")
     activations = list(engine.agenda.activations)
     if not activations:
-        print("  (vacia)")
+        print("  (empty)")
         return
     for index, activation in enumerate(activations, start=1):
-        print(f"  {index}: {activation.rule.__name__} -> hechos {activation.facts}")
+        print(f"  {index}: {activation.rule.__name__} -> facts {activation.facts}")
 
 
 def print_working_memory_and_agenda(engine: KnowledgeEngine) -> None:
-    """Muestra la memoria de trabajo y la agenda del motor."""
+    """Shows the engine's working memory and agenda."""
     print_working_memory(engine)
     print_agenda(engine)
 
 
 def run_step_by_step(engine: KnowledgeEngine) -> None:
-    """Ejecuta el motor regla a regla mostrando el estado tras cada disparo.
+    """Executes the engine rule by rule, showing the state after each firing.
 
-    Util para depuracion: permite observar exactamente que hechos activan
-    cada regla y como evoluciona la memoria de trabajo.
+    Useful for debugging: allows observing exactly which facts trigger
+    each rule and how the working memory evolves.
     """
     step = 1
     engine.running = True
@@ -40,7 +40,7 @@ def run_step_by_step(engine: KnowledgeEngine) -> None:
             added, removed = engine.get_activations()
             engine.strategy.update_agenda(engine.agenda, added, removed)
 
-            print(f"\n--- Estado antes del paso {step} ---")
+            print(f"\n--- State before step {step} ---")
             print_working_memory(engine)
             print_agenda(engine)
 
@@ -48,7 +48,7 @@ def run_step_by_step(engine: KnowledgeEngine) -> None:
             if activation is None:
                 break
 
-            print(f"\nDisparando: {activation.rule.__name__}")
+            print(f"\nFiring: {activation.rule.__name__}")
             activation.rule(
                 engine,
                 **{

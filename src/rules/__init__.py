@@ -1,1 +1,1 @@
-"""Subpaquete de reglas del sistema experto de clasificacion de rocas."""
+"""Rules subpackage for the rock classification expert system."""

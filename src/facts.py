@@ -1,19 +1,19 @@
-"""Hechos base que representan la evidencia y los resultados del sistema experto."""
+"""Base facts representing the evidence and results of the expert system."""
 
 from experta import Fact
 
 
 class Evidence(Fact):
-    """Observacion o propiedad identificada en una muestra de roca."""
+    """Observation or property identified in a rock sample."""
 
 
 class Origin(Fact):
-    """Dato o hipotesis sobre el origen geologico de una muestra."""
+    """Data or hypothesis regarding the geological origin of a sample."""
 
 
 class Classification(Fact):
-    """Resultado de clasificacion asignado a una muestra."""
+    """Classification result assigned to a sample."""
 
 
 class Recommendation(Fact):
-    """Recomendacion de uso asociada a la clasificacion obtenida."""
+    """Recommendation associated with the classification obtained."""

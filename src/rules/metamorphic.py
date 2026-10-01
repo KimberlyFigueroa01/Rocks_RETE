@@ -1,9 +1,9 @@
-"""Reglas del sistema experto para rocas metamorficas.
+"""Expert system rules for metamorphic rocks.
 
-Estructura de tres niveles (RETE):
-  - Nivel 1: inferencia del origen (metamorfico).
-  - Nivel 2: clasificacion de la roca especifica.
-  - Nivel 3: recomendacion de uso.
+Three-level structure (RETE):
+  - Level 1: origin inference (metamorphic).
+  - Level 2: specific rock classification.
+  - Level 3: usage recommendation.
 """
 
 from experta import Rule, NOT, P, L
@@ -12,17 +12,17 @@ from src.facts import Evidence, Origin, Classification, Recommendation
 
 
 class MetamorphicRules:
-    """Mixin con todas las reglas de clasificacion de rocas metamorficas."""
+    """Mixin containing all classification rules for metamorphic rocks."""
 
     # -----------------------------------------------------------------------
-    # NIVEL 1: Inferencia de origen
+    # LEVEL 1: Origin inference
     # -----------------------------------------------------------------------
 
     @Rule(Evidence(foliation='yes'),
           Evidence(directional_stress='yes'),
           NOT(Origin()), salience=2)
     def r1_metamorphic(self):
-        """Foliacion + estres direccional => origen metamorfico."""
+        """Foliation + directional stress => metamorphic origin."""
         print("R1_metamorphic: foliation + directional stress -> metamorphic origin")
         self.declare(Origin(type='metamorphic'))
 
@@ -33,33 +33,33 @@ class MetamorphicRules:
           Evidence(fractional_crystallization='no'),
           NOT(Origin()), salience=5)
     def r2_metamorphic(self):
-        """Recristalizacion en estado solido sin rasgos sedimentarios ni igneos => origen metamorfico."""
+        """Solid-state recrystallization without sedimentary or igneous features => metamorphic origin."""
         print("R2_metamorphic: solid-state recrystallization without sedimentary or igneous features -> metamorphic origin")
         self.declare(Origin(type='metamorphic'))
 
     # -----------------------------------------------------------------------
-    # NIVEL 2: Clasificacion
+    # LEVEL 2: Classification
     # -----------------------------------------------------------------------
 
-    # Pizarra
+    # Slate
     @Rule(Origin(type='metamorphic'),
           Evidence(texture='slaty_foliation'),
           Evidence(grain_size='very_fine'),
           Evidence(protolith='shale'),
           NOT(Classification()), salience=3)
     def r3_metamorphic(self):
-        """Metamorfica + foliacion pizarrosa + grano muy fino + protolito lutita => pizarra."""
+        """Metamorphic + slaty foliation + very fine grain + shale protolith => slate."""
         print("R3_metamorphic: slaty foliation + very fine grain + shale protolith -> slate")
         self.declare(Classification(rock='slate'))
 
-    # Marmol
+    # Marble
     @Rule(Origin(type='metamorphic'),
           Evidence(foliation='no'),
           Evidence(hcl_reaction='effervescent'),
           Evidence(protolith='limestone'),
           NOT(Classification()), salience=3)
     def r4_metamorphic(self):
-        """Metamorfica + sin foliacion + efervescencia HCl + protolito caliza => marmol."""
+        """Metamorphic + no foliation + HCl effervescence + limestone protolith => marble."""
         print("R4_metamorphic: no foliation + effervescent HCl reaction + limestone protolith -> marble")
         self.declare(Classification(rock='marble'))
 
@@ -68,17 +68,17 @@ class MetamorphicRules:
           Evidence(hcl_reaction='effervescent'),
           NOT(Classification()), salience=2)
     def r5_metamorphic(self):
-        """Metamorfica + recristalizacion masiva sacaroidal + efervescencia HCl => marmol."""
+        """Metamorphic + massive saccharoidal recrystallization + HCl effervescence => marble."""
         print("R5_metamorphic: massive saccharoidal recrystallization + effervescent HCl reaction -> marble")
         self.declare(Classification(rock='marble'))
 
-    # Gneis
+    # Gneiss
     @Rule(Origin(type='metamorphic'),
           Evidence(texture='foliated_medium_to_coarse'),
           Evidence(banding='alternating_light_quartzofeldspathic_and_dark_mafic'),
           NOT(Classification()), salience=2)
     def r6_metamorphic(self):
-        """Metamorfica + foliacion grano medio a grueso + bandas alternas => gneis."""
+        """Metamorphic + medium to coarse foliation + alternating bands => gneiss."""
         print("R6_metamorphic: medium-to-coarse foliation + alternating bands -> gneiss")
         self.declare(Classification(rock='gneiss'))
 
@@ -88,18 +88,18 @@ class MetamorphicRules:
           Evidence(protolith=L('granitic') | L('sedimentary')),
           NOT(Classification()), salience=3)
     def r7_metamorphic(self):
-        """Metamorfica + bandas gneisicas + metamorfismo intenso + protolito granitico o sedimentario => gneis."""
+        """Metamorphic + gneissic banding + intense metamorphism + granitic or sedimentary protolith => gneiss."""
         print("R7_metamorphic: gneissic banding + intense metamorphism -> gneiss")
         self.declare(Classification(rock='gneiss'))
 
-    # Cuarcita
+    # Quartzite
     @Rule(Origin(type='metamorphic'),
           Evidence(texture='massive_non_foliated'),
           Evidence(mineralogy='recrystallized_interlocking_quartz'),
           Evidence(mohs_hardness=P(lambda x: x >= 6.5)),
           NOT(Classification()), salience=3)
     def r8_metamorphic(self):
-        """Metamorfica + textura masiva sin foliar + cuarzo entrelazado + dureza >= 6.5 => cuarcita."""
+        """Metamorphic + massive non-foliated texture + interlocking quartz + hardness >= 6.5 => quartzite."""
         print("R8_metamorphic: massive non-foliated texture + interlocking quartz + hardness >= 6.5 -> quartzite")
         self.declare(Classification(rock='quartzite'))
 
@@ -108,12 +108,12 @@ class MetamorphicRules:
           Evidence(metamorphism_type=L('thermal') | L('regional')),
           NOT(Classification()), salience=2)
     def r9_metamorphic(self):
-        """Metamorfica + protolito cuarzo-arenita + metamorfismo termico o regional => cuarcita."""
+        """Metamorphic + quartz-arenite protolith + thermal or regional metamorphism => quartzite."""
         print("R9_metamorphic: quartz-arenite protolith + thermal or regional metamorphism -> quartzite")
         self.declare(Classification(rock='quartzite'))
 
     # -----------------------------------------------------------------------
-    # NIVEL 3: Recomendacion de uso
+    # LEVEL 3: Usage recommendation
     # -----------------------------------------------------------------------
 
     @Rule(Origin(type='metamorphic'), Classification(rock='slate'))

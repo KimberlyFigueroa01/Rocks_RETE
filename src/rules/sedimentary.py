@@ -1,9 +1,9 @@
-"""Reglas del sistema experto para rocas sedimentarias.
+"""Expert system rules for sedimentary rocks.
 
-Estructura de tres niveles (RETE):
-  - Nivel 1: inferencia del origen (sedimentario).
-  - Nivel 2: clasificacion de la roca especifica.
-  - Nivel 3: recomendacion de uso.
+Three-level structure (RETE):
+  - Level 1: origin inference (sedimentary).
+  - Level 2: specific rock classification.
+  - Level 3: usage recommendation.
 """
 
 from experta import Rule, OR, AND, NOT
@@ -12,120 +12,120 @@ from src.facts import Evidence, Origin, Classification, Recommendation
 
 
 class SedimentaryRules:
-    """Mixin con todas las reglas de clasificacion de rocas sedimentarias."""
+    """Mixin containing all classification rules for sedimentary rocks."""
 
     # -----------------------------------------------------------------------
-    # NIVEL 1: Inferencia de origen
+    # LEVEL 1: Origin inference
     # -----------------------------------------------------------------------
 
     @Rule(Evidence(texture='clastic'), salience=5)
     def r1_sedimentary(self):
-        """Textura clastica => origen sedimentario."""
+        """Clastic texture => sedimentary origin."""
         print("R1_sedimentary: clastic texture -> sedimentary origin")
         self.declare(Origin(type='sedimentary'))
 
     @Rule(Evidence(texture='non_clastic'), salience=5)
     def r2_sedimentary(self):
-        """Textura no clastica => origen sedimentario."""
+        """Non-clastic texture => sedimentary origin."""
         print("R2_sedimentary: non-clastic texture -> sedimentary origin")
         self.declare(Origin(type='sedimentary'))
 
-    # Evidencia ambigua: la reaccion acida tambien ocurre en marmol metamorfico.
-    # Baja saliencia + NOT(Origin()): solo se dispara si ninguna otra regla
-    # de mayor confianza (textura, restos vegetales, foliacion) fijo ya un origen.
+    # Ambiguous evidence: acid reaction also occurs in metamorphic marble.
+    # Low salience + NOT(Origin()): only fires if no higher-confidence
+    # rule (texture, plant remains, foliation) already set an origin.
     @Rule(AND(
         OR(Evidence(acid_reaction='strong'), Evidence(acid_reaction='weak')),
         Evidence(foliation='no'),
         NOT(Origin())
     ), salience=1)
     def r3_sedimentary(self):
-        """Reaccion acida + sin foliacion + sin origen previo => origen sedimentario."""
+        """Acid reaction + no foliation + no prior origin => sedimentary origin."""
         print("R3_sedimentary: acid reaction (strong/weak) + no foliation + no prior origin -> sedimentary origin")
         self.declare(Origin(type='sedimentary'))
 
     @Rule(Evidence(plant_remains='yes'), salience=5)
     def r4_sedimentary(self):
-        """Restos vegetales => origen sedimentario."""
+        """Plant remains => sedimentary origin."""
         print("R4_sedimentary: plant remains -> sedimentary origin")
         self.declare(Origin(type='sedimentary'))
 
     # -----------------------------------------------------------------------
-    # NIVEL 2: Clasificacion
+    # LEVEL 2: Classification
     # -----------------------------------------------------------------------
 
     @Rule(Origin(type='sedimentary'), Evidence(texture='clastic'), Evidence(clast_size='clay'),
           salience=5)
     def r5_sedimentary(self):
-        """Sedimentaria + clastica + arcilla => lutita."""
+        """Sedimentary + clastic + clay => shale."""
         print("R5_sedimentary: sedimentary + clastic + clay -> shale")
         self.declare(Classification(rock='shale'))
 
     @Rule(Origin(type='sedimentary'), Evidence(texture='clastic'), Evidence(clast_size='silt'),
           salience=5)
     def r6_sedimentary(self):
-        """Sedimentaria + clastica + limo => limolita."""
+        """Sedimentary + clastic + silt => siltstone."""
         print("R6_sedimentary: sedimentary + clastic + silt -> siltstone")
         self.declare(Classification(rock='siltstone'))
 
     @Rule(Origin(type='sedimentary'), Evidence(texture='clastic'), Evidence(clast_size='sand'),
           salience=5)
     def r7_sedimentary(self):
-        """Sedimentaria + clastica + arena => arenisca."""
+        """Sedimentary + clastic + sand => sandstone."""
         print("R7_sedimentary: sedimentary + clastic + sand -> sandstone")
         self.declare(Classification(rock='sandstone'))
 
     @Rule(Origin(type='sedimentary'), Evidence(texture='clastic'),
           Evidence(clast_size='gravel'), Evidence(clast_shape='rounded'), salience=5)
     def r8_sedimentary(self):
-        """Sedimentaria + clastica + grava + redondeada => conglomerado."""
+        """Sedimentary + clastic + gravel + rounded => conglomerate."""
         print("R8_sedimentary: sedimentary + clastic + gravel + rounded -> conglomerate")
         self.declare(Classification(rock='conglomerate'))
 
     @Rule(Origin(type='sedimentary'), Evidence(texture='clastic'),
           Evidence(clast_size='gravel'), Evidence(clast_shape='angular'), salience=5)
     def r9_sedimentary(self):
-        """Sedimentaria + clastica + grava + angular => brecha."""
+        """Sedimentary + clastic + gravel + angular => breccia."""
         print("R9_sedimentary: sedimentary + clastic + gravel + angular -> breccia")
         self.declare(Classification(rock='breccia'))
 
     @Rule(Origin(type='sedimentary'), Evidence(texture='non_clastic'), Evidence(taste='salty'),
           salience=5)
     def r10_sedimentary(self):
-        """Sedimentaria + no clastica + sabor salado => halita."""
+        """Sedimentary + non-clastic + salty taste => halite."""
         print("R10_sedimentary: sedimentary + non-clastic + salty taste -> halite")
         self.declare(Classification(rock='halite'))
 
     @Rule(Origin(type='sedimentary'), Evidence(texture='non_clastic'), Evidence(taste='none'),
           salience=5)
     def r11_sedimentary(self):
-        """Sedimentaria + no clastica + sin sabor => yeso."""
+        """Sedimentary + non-clastic + no taste => gypsum."""
         print("R11_sedimentary: sedimentary + non-clastic + no taste -> gypsum")
         self.declare(Classification(rock='gypsum'))
 
-    # Evidencia ambigua: reaccion acida fuerte tambien aplica a arenisca calcarea.
-    # Baja saliencia + NOT(Classification()): solo si no se alcanzo clasificacion previa.
+    # Ambiguous evidence: strong acid reaction also applies to calcareous sandstone.
+    # Low salience + NOT(Classification()): only fires if no prior classification was reached.
     @Rule(Origin(type='sedimentary'), Evidence(acid_reaction='strong'),
           NOT(Classification()), salience=1)
     def r12_sedimentary(self):
-        """Sedimentaria + reaccion acida fuerte + sin clasificacion previa => caliza."""
+        """Sedimentary + strong acid reaction + no prior classification => limestone."""
         print("R12_sedimentary: sedimentary + strong acid reaction + no prior classification -> limestone")
         self.declare(Classification(rock='limestone'))
 
     @Rule(Origin(type='sedimentary'), Evidence(acid_reaction='weak'),
           NOT(Classification()), salience=1)
     def r13_sedimentary(self):
-        """Sedimentaria + reaccion acida debil + sin clasificacion previa => dolomita."""
+        """Sedimentary + weak acid reaction + no prior classification => dolomite."""
         print("R13_sedimentary: sedimentary + weak acid reaction + no prior classification -> dolomite")
         self.declare(Classification(rock='dolomite'))
 
     @Rule(Origin(type='sedimentary'), Evidence(plant_remains='yes'), salience=5)
     def r14_sedimentary(self):
-        """Sedimentaria + restos vegetales => carbon."""
+        """Sedimentary + plant remains => coal."""
         print("R14_sedimentary: sedimentary + plant remains -> coal")
         self.declare(Classification(rock='coal'))
 
     # -----------------------------------------------------------------------
-    # NIVEL 3: Recomendacion de uso
+    # LEVEL 3: Usage recommendation
     # -----------------------------------------------------------------------
 
     @Rule(Classification(rock='shale'))

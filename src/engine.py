@@ -1,8 +1,8 @@
-"""Motor de inferencia del sistema experto de clasificacion de rocas.
+"""Inference engine for the rock classification expert system.
 
-Ensambla los tres grupos de reglas (sedimentarias, igneas, metamorficas)
-mediante herencia multiple para que el motor Rete de Experta construya
-una unica red de condicion compartida.
+Assembles the three rule groups (sedimentary, igneous, metamorphic)
+using multiple inheritance so that Experta's Rete engine builds
+a single shared condition network.
 """
 
 from experta import KnowledgeEngine
@@ -13,9 +13,9 @@ from src.rules.metamorphic import MetamorphicRules
 
 
 class RockClassificationEngine(SedimentaryRules, IgneousRules, MetamorphicRules, KnowledgeEngine):
-    """Motor de clasificacion de rocas basado en el algoritmo Rete.
+    """Rock classification engine based on the Rete algorithm.
 
-    Hereda los tres mixins de reglas y la clase base de Experta.
-    El orden de herencia (MRO de Python) coloca primero los mixins de reglas
-    y KnowledgeEngine al final, respetando la convencion de Experta.
+    Inherits the three rule mixins and Experta's base class.
+    The inheritance order (Python's MRO) places the rule mixins first
+    and KnowledgeEngine at the end, respecting Experta's convention.
     """

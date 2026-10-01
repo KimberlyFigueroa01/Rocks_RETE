@@ -1,1 +1,1 @@
-"""Sistema experto para clasificar rocas usando Experta y el algoritmo Rete."""
+"""Expert system for classifying rocks using Experta and the Rete algorithm."""
