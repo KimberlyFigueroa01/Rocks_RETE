@@ -2,14 +2,14 @@
 -- Metamorphic origin: foliation from directional stress, or solid-state
 -- recrystallization in non-foliated samples lacking sedimentary/igneous features.
 
-R_metamorficas1:
+R1_metamorficas:
 IF
     Evidence(foliation = 'yes') AND
     Evidence(directional_stress = 'yes')
 THEN
     Declare(Origin(type = 'metamorphic'))
 
-R_metamorficas2:
+R2_metamorficas:
 IF
     Evidence(foliation = 'no') AND
     Evidence(solid_state_recrystallization = 'yes') AND
@@ -23,7 +23,7 @@ THEN
 -- LEVEL 2: Classification --
 
 -- Slate
-R_metamorficas3:
+R3_metamorficas:
 IF
     Origin(type = 'metamorphic') AND
     Evidence(texture = 'slaty_foliation') AND
@@ -33,7 +33,7 @@ THEN
     Declare(Classification(rock = 'slate'))
 
 -- Marble
-R_metamorficas4:
+R4_metamorficas:
 IF
     Origin(type = 'metamorphic') AND
     Evidence(foliation = 'no') AND
@@ -42,7 +42,7 @@ IF
 THEN
     Declare(Classification(rock = 'marble'))
 
-R_metamorficas5:
+R5_metamorficas:
 IF
     Origin(type = 'metamorphic') AND
     Evidence(texture = 'massive_saccharoidal_recrystallization') AND
@@ -51,7 +51,7 @@ THEN
     Declare(Classification(rock = 'marble'))
 
 -- Gneiss
-R_metamorficas6:
+R6_metamorficas:
 IF
     Origin(type = 'metamorphic') AND
     Evidence(texture = 'foliated_medium_to_coarse') AND
@@ -59,7 +59,7 @@ IF
 THEN
     Declare(Classification(rock = 'gneiss'))
 
-R_metamorficas7:
+R7_metamorficas:
 IF
     Origin(type = 'metamorphic') AND
     Evidence(texture = 'gneissic_banding') AND
@@ -69,7 +69,7 @@ THEN
     Declare(Classification(rock = 'gneiss'))
 
 -- Quartzite
-R_metamorficas8:
+R8_metamorficas:
 IF
     Origin(type = 'metamorphic') AND
     Evidence(texture = 'massive_non_foliated') AND
@@ -78,7 +78,7 @@ IF
 THEN
     Declare(Classification(rock = 'quartzite'))
 
-R_metamorficas9:
+R9_metamorficas:
 IF
     Origin(type = 'metamorphic') AND
     Evidence(protolith = 'quartz_arenite') AND
@@ -89,7 +89,7 @@ THEN
 
 -- LEVEL 3: Engineering recommendation --
 
-R_metamorficas10:
+R10_metamorficas:
 IF
     Origin(type = 'metamorphic') AND
     Classification(rock = 'slate')
@@ -98,7 +98,7 @@ THEN
         panels and facade cladding (smooth cleavage planes, very low
         permeability)'))
 
-R_metamorficas11:
+R11_metamorficas:
 IF
     Origin(type = 'metamorphic') AND
     Classification(rock = 'marble')

@@ -22,6 +22,3 @@ class Classification(Fact):
 class Recommendation(Fact):
     """Recommendation associated with the classification obtained."""
     pass
-
-
-

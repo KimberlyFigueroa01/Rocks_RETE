@@ -2,7 +2,7 @@
 -- Igneous origin is attributed if there is evidence of magmatic cooling,
 -- ruling out exogenous structures (fossils, stratification).
 
-R_igneas1:
+R1_igneas:
 IF
     Evidence(fractional_crystallization = 'yes') AND
     Evidence(fossils = 'no') AND
@@ -10,7 +10,7 @@ IF
 THEN
     Declare(Origin(type = 'igneous'))
 
-R_igneas2:
+R2_igneas:
 IF
     Evidence(crystalline_mosaic_texture = 'yes') AND
     Evidence(fossils = 'no') AND
@@ -18,7 +18,7 @@ IF
 THEN
     Declare(Origin(type = 'igneous'))
 
-R_igneas3:   
+R3_igneas:   
 IF
     Evidence(texture = 'glassy_amorphous') AND
     Evidence(fossils = 'no') AND
@@ -32,7 +32,7 @@ THEN
 -- (b) by compositional definition.
 
 -- Granite
-R_igneas4:
+R4_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(texture = 'phaneritic_porphyritic') AND
@@ -41,7 +41,7 @@ IF
 THEN
     Declare(Classification(rock = 'granite'))
 
-R_igneas5:
+R5_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(composition = 'felsic')
@@ -49,7 +49,7 @@ THEN
     Declare(Classification(rock = 'granite'))
 
 -- Rhyolite
-R_igneas6:
+R6_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(texture = 'aphanitic') AND
@@ -58,7 +58,7 @@ IF
 THEN
     Declare(Classification(rock = 'rhyolite'))
 
-R_igneas7:
+R7_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(composition = 'volcanic_equivalent_to_granite')
@@ -66,7 +66,7 @@ THEN
     Declare(Classification(rock = 'rhyolite'))
 
 -- Basalt
-R_igneas8:
+R8_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(texture = 'aphanitic_volcanic') AND
@@ -75,7 +75,7 @@ IF
 THEN
     Declare(Classification(rock = 'basalt'))
 
-R_igneas9:
+R9_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(composition = 'mafic_ferromagnesian_rich') AND
@@ -84,7 +84,7 @@ THEN
     Declare(Classification(rock = 'basalt'))
 
 -- Diorite
-R_igneas10:
+R10_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(texture = 'phaneritic') AND
@@ -93,7 +93,7 @@ IF
 THEN
     Declare(Classification(rock = 'diorite'))
 
-R_igneas11:
+R11_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(texture = 'phaneritic') AND
@@ -103,7 +103,7 @@ THEN
     Declare(Classification(rock = 'diorite'))
 
 -- Andesite
-R_igneas12:
+R12_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(texture = 'aphanitic_fine_grained') AND
@@ -112,7 +112,7 @@ IF
 THEN
     Declare(Classification(rock = 'andesite'))
 
-R_igneas13:
+R13_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(composition = 'intermediate_volcanic') AND
@@ -121,7 +121,7 @@ THEN
     Declare(Classification(rock = 'andesite'))
 
 -- Gabbro
-R_igneas14:
+R14_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(texture = 'phaneritic') AND
@@ -131,7 +131,7 @@ IF
 THEN
     Declare(Classification(rock = 'gabbro'))
 
-R_igneas15:
+R15_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(composition = 'mafic_plutonic') AND
@@ -140,7 +140,7 @@ THEN
     Declare(Classification(rock = 'gabbro'))
 
 -- Obsidian
-R_igneas16:
+R16_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(texture = 'glassy_amorphous') AND
@@ -148,7 +148,7 @@ IF
 THEN
     Declare(Classification(rock = 'obsidian'))
 
-R_igneas17:
+R17_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(fracture = 'conchoidal_perfect') AND
@@ -157,7 +157,7 @@ THEN
     Declare(Classification(rock = 'obsidian'))
 
 -- Pegmatite
-R_igneas18:
+R18_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(texture = 'pegmatitic') AND
@@ -165,7 +165,7 @@ IF
 THEN
     Declare(Classification(rock = 'pegmatite'))
 
-R_igneas19:
+R19_igneas:
 IF
     Origin(type = 'igneous') AND
     Evidence(giant_crystals = 'quartz_and_feldspar') AND
@@ -176,7 +176,7 @@ THEN
 
 -- LEVEL 3: Engineering recommendation --
 
-R_igneas20:
+R20_igneas:
 IF
     Origin(type = 'igneous') AND
     Classification(rock = 'basalt')
@@ -185,7 +185,7 @@ THEN
         concrete and asphalt pavements (homogeneous, isotropic, uniform
         stress distribution)'))
 
-R_igneas21:
+R21_igneas:
 IF
     Origin(type = 'igneous') AND
     Classification(rock = 'granite')
