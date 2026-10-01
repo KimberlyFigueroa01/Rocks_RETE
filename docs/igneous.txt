@@ -1,0 +1,195 @@
+-- LEVEL 1: Inference of origin --
+-- Igneous origin is attributed if there is evidence of magmatic cooling,
+-- ruling out exogenous structures (fossils, stratification).
+
+R_igneas1:
+IF
+    Evidence(fractional_crystallization = 'yes') AND
+    Evidence(fossils = 'no') AND
+    Evidence(stratification = 'no')
+THEN
+    Declare(Origin(type = 'igneous'))
+
+R_igneas2:
+IF
+    Evidence(crystalline_mosaic_texture = 'yes') AND
+    Evidence(fossils = 'no') AND
+    Evidence(stratification = 'no')
+THEN
+    Declare(Origin(type = 'igneous'))
+
+R_igneas3:   
+IF
+    Evidence(texture = 'glassy_amorphous') AND
+    Evidence(fossils = 'no') AND
+    Evidence(stratification = 'no')
+THEN
+    Declare(Origin(type = 'igneous'))
+
+
+-- LEVEL 2: Classification --
+-- Each rock has two alternative paths: (a) by texture + physical property,
+-- (b) by compositional definition.
+
+-- Granite
+R_igneas4:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(texture = 'phaneritic_porphyritic') AND
+    Evidence(color = 'light') AND
+    Evidence(quartz = 'rich')
+THEN
+    Declare(Classification(rock = 'granite'))
+
+R_igneas5:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(composition = 'felsic')
+THEN
+    Declare(Classification(rock = 'granite'))
+
+-- Rhyolite
+R_igneas6:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(texture = 'aphanitic') AND
+    Evidence(color = 'light') AND
+    Evidence(quartz = 'present')
+THEN
+    Declare(Classification(rock = 'rhyolite'))
+
+R_igneas7:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(composition = 'volcanic_equivalent_to_granite')
+THEN
+    Declare(Classification(rock = 'rhyolite'))
+
+-- Basalt
+R_igneas8:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(texture = 'aphanitic_volcanic') AND
+    Evidence(color = 'dark') AND
+    Evidence(density = 'high')
+THEN
+    Declare(Classification(rock = 'basalt'))
+
+R_igneas9:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(composition = 'mafic_ferromagnesian_rich') AND
+    Evidence(quartz = 'absent')
+THEN
+    Declare(Classification(rock = 'basalt'))
+
+-- Diorite
+R_igneas10:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(texture = 'phaneritic') AND
+    Evidence(quartz = 'absent') AND
+    Evidence(composition = 'intermediate_salt_and_pepper')
+THEN
+    Declare(Classification(rock = 'diorite'))
+
+R_igneas11:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(texture = 'phaneritic') AND
+    Evidence(color = 'intermediate') AND
+    Evidence(dominant_minerals = 'plagioclase_amphibole')
+THEN
+    Declare(Classification(rock = 'diorite'))
+
+-- Andesite
+R_igneas12:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(texture = 'aphanitic_fine_grained') AND
+    Evidence(color = 'medium_gray') AND
+    Evidence(quartz = 'not_dominant')
+THEN
+    Declare(Classification(rock = 'andesite'))
+
+R_igneas13:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(composition = 'intermediate_volcanic') AND
+    Evidence(phenocrysts = 'plagioclase_amphibole')
+THEN
+    Declare(Classification(rock = 'andesite'))
+
+-- Gabbro
+R_igneas14:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(texture = 'phaneritic') AND
+    Evidence(color = 'dark_green_to_black') AND
+    Evidence(dominant_minerals = 'ferromagnesian') AND
+    Evidence(quartz = 'absent')
+THEN
+    Declare(Classification(rock = 'gabbro'))
+
+R_igneas15:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(composition = 'mafic_plutonic') AND
+    Evidence(dominant_minerals = 'pyroxene_calcic_plagioclase')
+THEN
+    Declare(Classification(rock = 'gabbro'))
+
+-- Obsidian
+R_igneas16:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(texture = 'glassy_amorphous') AND
+    Evidence(cooling = 'instantaneous')
+THEN
+    Declare(Classification(rock = 'obsidian'))
+
+R_igneas17:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(fracture = 'conchoidal_perfect') AND
+    Evidence(luster = 'glassy')
+THEN
+    Declare(Classification(rock = 'obsidian'))
+
+-- Pegmatite
+R_igneas18:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(texture = 'pegmatitic') AND
+    Evidence(crystal_size_cm > 2)
+THEN
+    Declare(Classification(rock = 'pegmatite'))
+
+R_igneas19:
+IF
+    Origin(type = 'igneous') AND
+    Evidence(giant_crystals = 'quartz_and_feldspar') AND
+    Evidence(environment = 'late_magmatic')
+THEN
+    Declare(Classification(rock = 'pegmatite'))
+
+
+-- LEVEL 3: Engineering recommendation --
+
+R_igneas20:
+IF
+    Origin(type = 'igneous') AND
+    Classification(rock = 'basalt')
+THEN
+    Declare(Recommendation(use = 'Crushed stone aggregate for high-strength
+        concrete and asphalt pavements (homogeneous, isotropic, uniform
+        stress distribution)'))
+
+R_igneas21:
+IF
+    Origin(type = 'igneous') AND
+    Classification(rock = 'granite')
+THEN
+    Declare(Recommendation(use = 'Ornamental slabs, paving stones, building
+        cladding and heavy foundation blocks (high hardness, low porosity,
+        high compressive strength)'))
